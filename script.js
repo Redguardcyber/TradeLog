@@ -1,56 +1,68 @@
-document.getElementById('csvFileInput').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const rows = e.target.result.split('\n').slice(1).filter(r => r.trim() !== '');
-        const trades = rows.map(row => {
-            const [date, instrument, profitLoss, strategy, notes] = row.split(',');
-            return { date, instrument, profitLoss: parseFloat(profitLoss), strategy, notes };
-        });
-        displayTrades(trades);
-        displayMonthlyPerformance(trades);
-    };
-    reader.readAsText(file);
-});
+document.getElementById('csvFileInput').addEventListener('change', handleFileUpload, false);
 
-function displayTrades(trades) {
-    const tbody = document.querySelector('#tradeTable tbody');
-    tbody.innerHTML = '';
-    trades.forEach(trade => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${trade.date}</td>
-            <td>${trade.instrument}</td>
-            <td class="${trade.profitLoss >= 0 ? 'positive' : 'negative'}">${trade.profitLoss >= 0 ? '+' : ''}$${trade.profitLoss.toFixed(2)}</td>
-            <td>${trade.strategy}</td>
-            <td>${trade.notes}</td>
-        `;
-        tbody.appendChild(tr);
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const content = e.target.result;
+    const rows = content.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+    
+    const trades = rows.slice(1).map(row => {
+      const columns = row.split(',').map(col => col.trim());
+      return {
+        date: columns[0],
+        instrument: columns[1],
+        profitLoss: columns[2],
+        strategy: columns[3],
+        notes: columns[4]
+      };
     });
+
+    // Pulisci e converte profitto/perdita
+    trades.forEach(trade => {
+      trade.profitLoss = parseFloat(trade.profitLoss.replace('$', '').trim());
+    });
+
+    // Aggiungi i dati nella tabella
+    updateTradeTable(trades);
+    calculatePerformance(trades);
+  };
+
+  reader.readAsText(file);
 }
 
-function displayMonthlyPerformance(trades) {
-    const summaryDiv = document.getElementById('monthly-performance');
-    summaryDiv.innerHTML = '';
-    const months = {};
-    trades.forEach(trade => {
-        const [year, month] = trade.date.split('-');
-        const key = `${year}-${month}`;
-        if (!months[key]) months[key] = { profit: 0, wins: 0, total: 0 };
-        months[key].profit += trade.profitLoss;
-        if (trade.profitLoss > 0) months[key].wins++;
-        months[key].total++;
-    });
-    Object.entries(months).forEach(([month, data]) => {
-        const box = document.createElement('div');
-        box.className = 'month-box';
-        const profitClass = data.profit >= 0 ? 'positive' : 'negative';
-        const winRate = ((data.wins / data.total) * 100).toFixed(1);
-        box.innerHTML = `
-            <strong>${month}</strong><br>
-            <span class="${profitClass}">${data.profit >= 0 ? '+' : ''}$${data.profit.toFixed(2)}</span><br>
-            Win Rate: ${winRate}%
-        `;
-        summaryDiv.appendChild(box);
-    });
+function updateTradeTable(trades) {
+  const tableBody = document.querySelector('#tradeTable tbody');
+  tableBody.innerHTML = '';
+
+  trades.forEach(trade => {
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+      <td>${trade.date}</td>
+      <td>${trade.instrument}</td>
+      <td class="${trade.profitLoss >= 0 ? 'positive' : 'negative'}">${trade.profitLoss >= 0 ? '$' + trade.profitLoss : '$' + Math.abs(trade.profitLoss)}</td>
+      <td>${trade.strategy}</td>
+      <td>${trade.notes}</td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+}
+
+function calculatePerformance(trades) {
+  const totalProfit = trades.reduce((acc, trade) => acc + trade.profitLoss, 0);
+  const totalTrades = trades.length;
+  const totalWins = trades.filter(trade => trade.profitLoss > 0).length;
+  const winRate = (totalWins / totalTrades) * 100;
+
+  // Mostra performance mensili
+  document.getElementById('monthly-performance').innerHTML = `
+    <div class="month-box">
+      <h3>Performance Totale</h3>
+      <p>Profitti: $${totalProfit.toFixed(2)}</p>
+      <p>Win Rate: ${winRate.toFixed(2)}%</p>
+    </div>
+  `;
 }
