@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedTrades) {
     const trades = JSON.parse(savedTrades);
     updateTradeTable(trades);
-    calculatePerformance(trades);
+    calculateMonthlyPerformance(trades);
   }
 });
 
@@ -33,7 +33,7 @@ function handleFileUpload(event) {
 
     localStorage.setItem('trades', JSON.stringify(trades));
     updateTradeTable(trades);
-    calculatePerformance(trades);
+    calculateMonthlyPerformance(trades);
   };
 
   reader.readAsText(file);
@@ -55,17 +55,44 @@ function updateTradeTable(trades) {
   });
 }
 
-function calculatePerformance(trades) {
-  const totalProfit = trades.reduce((acc, trade) => acc + trade.profitLoss, 0);
-  const totalTrades = trades.length;
-  const totalWins = trades.filter(trade => trade.profitLoss > 0).length;
-  const winRate = (totalWins / totalTrades) * 100;
+function calculateMonthlyPerformance(trades) {
+  const monthlyPerformance = {};
 
-  document.getElementById('monthly-performance').innerHTML = `
-    <div class="month-box">
-      <h3>Performance Totale</h3>
-      <p>Profitti: $${totalProfit.toFixed(2)}</p>
-      <p>Win Rate: ${winRate.toFixed(2)}%</p>
-    </div>
-  `;
+  // Raggruppiamo i trade per mese
+  trades.forEach(trade => {
+    const date = new Date(trade.date);
+    const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
+
+    if (!monthlyPerformance[monthYear]) {
+      monthlyPerformance[monthYear] = {
+        totalProfit: 0,
+        totalWins: 0,
+        totalTrades: 0
+      };
+    }
+
+    monthlyPerformance[monthYear].totalProfit += trade.profitLoss;
+    monthlyPerformance[monthYear].totalTrades += 1;
+
+    if (trade.profitLoss > 0) {
+      monthlyPerformance[monthYear].totalWins += 1;
+    }
+  });
+
+  // Calcoliamo i risultati mensili
+  const performanceContainer = document.getElementById('monthly-performance');
+  performanceContainer.innerHTML = ''; // Resetta i risultati precedenti
+
+  Object.keys(monthlyPerformance).forEach(monthYear => {
+    const monthData = monthlyPerformance[monthYear];
+    const winRate = (monthData.totalWins / monthData.totalTrades) * 100;
+
+    performanceContainer.innerHTML += `
+      <div class="month-box">
+        <h3>Performance di ${monthYear}</h3>
+        <p>Profitti: $${monthData.totalProfit.toFixed(2)}</p>
+        <p>Win Rate: ${winRate.toFixed(2)}%</p>
+      </div>
+    `;
+  });
 }
