@@ -25,3 +25,18 @@ date,simbol,strategy,result,profit
 2025-03-06,MES,Anti POC,win,36.40
 2025-03-07,MES,Recupero B Shape,win,67.70
 2025-03-07,MES,Anti POC,win,366.40
+2025-03-10,MES,Recupero 1/2 Ora,loss,-149.65
+2025-03-12,MES,Recupero B Shape,win,125.15
+2025-03-12,MES,Volsys Bloccata,loss,-458
+2025-03-13,MES,Recupero Pre News,win,97.65
+2025-03-13,MES,Recupero 1/2 Ora,win,55.05
+2025-03-14,MES,Recupero Pre News,win,106.55
+2025-03-19,MES,Anti POC,loss,-507
+2025-03-19,MES,Non Recupero 1/2 Ora,win,178.15
+2025-03-20,MES,Anti B Shape RTH,win,407.10
+2025-03-24,MES,Anti POC,win,116.50
+2025-04-09,MES,Non Recupero 1/2 Ora,win,102.60
+2025-04-11,MES,Anti POC,win,292.65
+2025-04-14,MES,Anti POC,win,352.65
+2025-04-15,MES,Anti POC,loss,-269.85
+2025-04-16,MES,Anti POC,win,292.65
