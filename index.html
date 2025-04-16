@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TradeLog di Fabio e Christian</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>TradeLog di Fabio e Christian</h1>
+  </header>
+  <main>
+    <section id="upload-section">
+      <input type="file" id="csvFileInput" accept=".csv"/>
+    </section>
+    <section id="summary">
+      <h2>Performance Mensili</h2>
+      <div id="monthly-performance"></div>
+    </section>
+    <section id="trades">
+      <h2>Lista dei Trade</h2>
+      <table id="tradeTable">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Strumento</th>
+            <th>Profitto/Perdita</th>
+            <th>Strategia</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+  <footer>
+    <p>Powered by TradeLog &copy; 2025 - Fabio e Christian</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
