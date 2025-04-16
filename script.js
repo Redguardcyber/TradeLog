@@ -1,4 +1,13 @@
-document.getElementById('csvFileInput').addEventListener('change', handleFileUpload, false);
+document.getElementById('csvFileInput').addEventListener('change', handleFileUpload);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTrades = localStorage.getItem('trades');
+  if (savedTrades) {
+    const trades = JSON.parse(savedTrades);
+    updateTradeTable(trades);
+    calculatePerformance(trades);
+  }
+});
 
 function handleFileUpload(event) {
   const file = event.target.files[0];
@@ -14,17 +23,15 @@ function handleFileUpload(event) {
         date: columns[0],
         instrument: columns[1],
         profitLoss: columns[2],
-        strategy: columns[3],
-        notes: columns[4]
+        strategy: columns[3]
       };
     });
 
-    // Pulisci e converte profitto/perdita
     trades.forEach(trade => {
-      trade.profitLoss = parseFloat(trade.profitLoss.replace('$', '').trim());
+      trade.profitLoss = parseFloat(trade.profitLoss.replace('$', '').trim()) || 0;
     });
 
-    // Aggiungi i dati nella tabella
+    localStorage.setItem('trades', JSON.stringify(trades));
     updateTradeTable(trades);
     calculatePerformance(trades);
   };
@@ -38,15 +45,12 @@ function updateTradeTable(trades) {
 
   trades.forEach(trade => {
     const row = document.createElement('tr');
-
     row.innerHTML = `
       <td>${trade.date}</td>
       <td>${trade.instrument}</td>
       <td class="${trade.profitLoss >= 0 ? 'positive' : 'negative'}">${trade.profitLoss >= 0 ? '$' + trade.profitLoss : '$' + Math.abs(trade.profitLoss)}</td>
       <td>${trade.strategy}</td>
-      <td>${trade.notes}</td>
     `;
-
     tableBody.appendChild(row);
   });
 }
@@ -57,7 +61,6 @@ function calculatePerformance(trades) {
   const totalWins = trades.filter(trade => trade.profitLoss > 0).length;
   const winRate = (totalWins / totalTrades) * 100;
 
-  // Mostra performance mensili
   document.getElementById('monthly-performance').innerHTML = `
     <div class="month-box">
       <h3>Performance Totale</h3>
