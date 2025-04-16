@@ -3,4 +3,25 @@ date,simbol,strategy,result,profit
 2025-02-11,MES,Recupero 1/2 Ora,Win,159
 2025-02-12,MES,Errore emozionale,Loss,-116.10
 2025-02-12,MES,Errore emozionale,Loss,-262.35
-2025-02-12,MES, Recupero 1/2 Ora, Loss,-306
+2025-02-12,MES,Recupero 1/2 Ora,Loss,-306
+2025-02-13,MES,Non Recupero 1/2 Ora,Loss,-387.25
+2025-02-18,MES,Anti POC,Win,72.55
+2025-02-18,MES,Recupero 1/2 Ora,Win,41.40
+2025-02-18,MES,Errore Emozionale,loss,-22.40
+2025-02-18,MES,Errore Emozionale,win,12.75
+2025-02-19,MES,Anti GAP,loss,-147.25
+2025-02-21,MES,Non recupero 1/2 Ora,win,311.40
+2025-02-24,MES,Errore Emozionale,loss,-41.10
+2025-02-25,MES,Anti POC,win,118.40
+2025-02-26,MES,Anti POC,win,131.40
+2025-02-26,MES,Recupero 1/2 Ora,loss,-479.65
+2025-02-27,MES,Anti POC ETH,win,142.80
+2025-02-27,MES,Recupero 1/2 Ora,win,64.70
+2025-03-03,MES,Anti POC ETH,loss,-57.10
+2025-03-04,MES,Double Bottom,win,35.10
+2025-03-04,MES,Setup Oro,win,48
+2025-03-05,MES,Anti POC,win,78.90
+2025-03-06,MES,Anti POC,win,127.10
+2025-03-06,MES,Anti POC,win,36.40
+2025-03-07,MES,Recupero B Shape,win,67.70
+2025-03-07,MES,Anti POC,win,366.40
