@@ -1,7 +1,7 @@
-date,simbol,strategy,result,profit
-2025-02-10,MES,Recupero 1/2 Ora,Loss,-249.75
-2025-02-11,MES,Recupero 1/2 Ora,Win,159
-2025-02-12,MES,Errore emozionale,Loss,-116.10
+date,simbol,result,strategy,profit
+2025-02-10,MES,loss,Recupero 1/2 Ora,-249.75
+2025-02-11,MES,win,Recupero 1/2 Ora,159
+2025-02-12,MES,loss,Errore emozionale,-116.10
 2025-02-12,MES,Errore emozionale,Loss,-262.35
 2025-02-12,MES,Recupero 1/2 Ora,Loss,-306
 2025-02-13,MES,Non Recupero 1/2 Ora,Loss,-387.25
