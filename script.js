@@ -1,5 +1,5 @@
 
-const SHEET_ID = "1j7FXyH3R93cEGgnsq0pwmXTkBGaBLtcI772FKT1E_go";
+const SHEET_ID = '1j7FXyH3R93cEGgnsq0pwmXTkBGaBLtcI772FKT1E_go';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
 fetch(SHEET_URL)
