@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TradeLog di Fabio e Christian</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>TradeLog di Fabio e Christian</h1>
+    <button id="adminBtn">Area Admin</button>
+  </header>
+
+  <section id="adminArea" class="hidden">
+    <input type="password" id="password" placeholder="Inserisci password"/>
+    <input type="file" id="csvInput" accept=".csv" />
+    <button onclick="loadCSV()">Carica File CSV</button>
+  </section>
+
+  <section id="summary">
+    <h2>Resoconto Mensile</h2>
+    <div id="monthlySummary"></div>
+  </section>
+
+  <section>
+    <h2>Lista Trade</h2>
+    <table id="tradeTable">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Strumento</th>
+          <th>Profitto/Perdita</th>
+          <th>Strategia</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
