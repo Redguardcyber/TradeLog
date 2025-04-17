@@ -1,65 +1,68 @@
-const SHEET_ID = '1j7FXyH3R93cEGgnsq0pwmXTkBGaBLtcI772FKT1E_go';
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const sheetID = '1j7FXyH3R93cEGgnsq0pwmXTkBGaBLtcI772FKT1E_go';
+const sheetName = 'Foglio1';
+const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}`;
+const query = encodeURIComponent('Select A, B, C, D');
+const url = `${base}&tq=${query}`;
 
-fetch(SHEET_URL)
+fetch(url)
   .then(res => res.text())
-  .then(data => {
-    const json = JSON.parse(data.substr(47).slice(0, -2));
-    const rows = json.table.rows.map(r => ({
-      date: r.c[0].v,
-      instrument: r.c[1].v,
-      profitLoss: parseFloat(r.c[2].v),
-      strategy: r.c[3].v
-    }));
+  .then(rep => {
+    const data = JSON.parse(rep.substring(47).slice(0, -2));
+    const table = document.getElementById('tradeTable');
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = ''; // reset
 
-    renderTrades(rows);
-    renderMonthlySummary(rows);
+    let total = 0;
+    let winCount = 0;
+    let totalCount = 0;
+    let monthlyData = {};
+
+    data.table.rows.forEach(row => {
+      const date = row.c[0]?.f || '';
+      const instrument = row.c[1]?.v || '';
+      const profit = parseFloat(row.c[2]?.v || 0);
+      const strategy = row.c[3]?.v || '';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${date}</td>
+        <td>${instrument}</td>
+        <td style="color:${profit >= 0 ? 'green' : 'red'};">$${profit.toFixed(2)}</td>
+        <td>${strategy}</td>
+      `;
+      tbody.appendChild(tr);
+
+      if (!isNaN(profit)) {
+        total += profit;
+        totalCount++;
+        if (profit > 0) winCount++;
+
+        const month = date.split('/')[1] + '/' + date.split('/')[2]; // MM/YYYY
+        if (!monthlyData[month]) {
+          monthlyData[month] = { profit: 0, trades: 0, wins: 0 };
+        }
+        monthlyData[month].profit += profit;
+        monthlyData[month].trades++;
+        if (profit > 0) monthlyData[month].wins++;
+      }
+    });
+
+    // Aggiorna riepilogo totale
+    document.getElementById('totalProfit').textContent = `$${total.toFixed(2)}`;
+    const winRate = totalCount > 0 ? ((winCount / totalCount) * 100).toFixed(1) : 0;
+    document.getElementById('totalWinRate').textContent = `${winRate}%`;
+
+    // Riepilogo mensile
+    const monthlyEl = document.getElementById('monthlySummary');
+    monthlyEl.innerHTML = '';
+    Object.keys(monthlyData).forEach(month => {
+      const data = monthlyData[month];
+      const winRate = ((data.wins / data.trades) * 100).toFixed(1);
+      const div = document.createElement('div');
+      div.innerHTML = `<strong>${month}</strong>: <span style="color:${data.profit >= 0 ? 'green' : 'red'};">$${data.profit.toFixed(2)}</span> – Win Rate: ${winRate}%`;
+      monthlyEl.appendChild(div);
+    });
+  })
+  .catch(err => {
+    console.error('Errore nel caricamento dei dati:', err);
   });
-
-function renderTrades(trades) {
-  const tbody = document.querySelector("#tradeTable tbody");
-  tbody.innerHTML = "";
-  trades.forEach(t => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${t.date}</td>
-      <td>${t.instrument}</td>
-      <td class="${t.profitLoss >= 0 ? 'profit' : 'loss'}">$${t.profitLoss.toFixed(2)}</td>
-      <td>${t.strategy}</td>
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-function renderMonthlySummary(trades) {
-  const summary = {};
-
-  trades.forEach(t => {
-    const month = new Date(t.date).toLocaleString("default", { year: 'numeric', month: 'long' });
-    if (!summary[month]) {
-      summary[month] = { total: 0, win: 0, count: 0 };
-    }
-    summary[month].total += t.profitLoss;
-    if (t.profitLoss > 0) summary[month].win++;
-    summary[month].count++;
-  });
-
-  const summaryTable = document.getElementById("monthlySummary");
-  summaryTable.innerHTML = `
-    <tr><th>Mese</th><th>Profitto Totale</th><th>Win Rate</th></tr>
-  `;
-
-  Object.entries(summary).forEach(([month, data]) => {
-    const profit = data.total.toFixed(2);
-    const winRate = ((data.win / data.count) * 100).toFixed(0);
-    const color = data.total >= 0 ? "profit" : "loss";
-
-    summaryTable.innerHTML += `
-      <tr>
-        <td>${month}</td>
-        <td class="${color}">$${profit}</td>
-        <td>${winRate}%</td>
-      </tr>
-    `;
-  });
-}
